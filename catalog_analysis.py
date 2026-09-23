@@ -123,7 +123,7 @@ def print_non_comedy_titles(movies):
     for movie in movies:
         if "comedy" in movie["genres"]:
             continue
-        print(movie["title"])
+        print(normalize_title(movie["title"]))
 
 
 def print_first_masterpiece(movies):
@@ -131,7 +131,7 @@ def print_first_masterpiece(movies):
     while index < len(movies):
         movie = movies[index]
         if movie["rating"] > 9.0:
-            print(movie["title"])
+            print(normalize_title(movie["title"]))
             break
         index += 1
     else:
@@ -146,6 +146,26 @@ def count_long_movies(movies, threshold=120):
     return count
 
 
+def normalize_title(title):
+    words = []
+    for word in title.split():
+        words.append(word[0].upper() + word[1:])
+    return " ".join(words)
+
+
+def make_slug(title):
+    return normalize_title(title).lower().replace(" ", "-")
+
+
+def format_report_line(movie):
+    genres = ", ".join(sorted(movie["genres"]))
+    return (
+        f'"{normalize_title(movie["title"])}" ({movie["year"]}) — '
+        f"{movie['rating']:.1f}/10, {duration_in_hours(movie['duration_min'])}, "
+        f"жанры: {genres}"
+    )
+
+
 if __name__ == "__main__":
     print(f"Средний рейтинг: {average_rating(movies):.1f}")
     print(f"Возраст фильмов: {catalog_age_stats(movies)}")
@@ -156,3 +176,5 @@ if __name__ == "__main__":
     print_first_masterpiece(movies)
     print_first_masterpiece([movie for movie in movies if movie["rating"] <= 9])
     print(count_long_movies(movies))
+    print(format_report_line(movies[7]))
+    print(make_slug(movies[7]["title"]))
