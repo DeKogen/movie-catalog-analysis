@@ -166,6 +166,19 @@ def format_report_line(movie):
     )
 
 
+def sorted_by_rating(movies):
+    return sorted(movies, key=lambda movie: movie["rating"], reverse=True)
+
+
+def titles_sorted_by_rating(movies):
+    return [movie["title"] for movie in sorted_by_rating(movies)]
+
+
+def top_n_by_rating(movies, n=3):
+    ranked = sorted_by_rating(movies)
+    return [(movie["title"], movie["rating"]) for movie in ranked[:n]]
+
+
 if __name__ == "__main__":
     print(f"Средний рейтинг: {average_rating(movies):.1f}")
     print(f"Возраст фильмов: {catalog_age_stats(movies)}")
@@ -178,3 +191,5 @@ if __name__ == "__main__":
     print(count_long_movies(movies))
     print(format_report_line(movies[7]))
     print(make_slug(movies[7]["title"]))
+    print(titles_sorted_by_rating(movies))
+    print(top_n_by_rating(movies))
